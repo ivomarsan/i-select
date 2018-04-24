@@ -1,7 +1,7 @@
-import iButton from './iButton.vue'
+import iSelect from './iSelect.vue'
 
 module.exports = {
   install (Vue, options) {
-    Vue.component('i-button', iButton)
+    Vue.component('i-select', iSelect)
   }
 }
