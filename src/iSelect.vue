@@ -88,8 +88,10 @@ export default {
     const initialValueWithReturn =
       this.return && this.options.find(o => o[this.return] === this.value);
     this.mutableValue = initialValueWithReturn || this.initial;
+    this.search = this.getLabel(this.mutableValue);
     this.mutableOptions = this.options.slice(0);
   },
+
   watch: {
     /**
      * When the value prop changes, update
@@ -115,6 +117,20 @@ export default {
      */
     options(val) {
       this.mutableOptions = val;
+
+      if (this.return) {
+        this.mutableValue = this.mutableOptions.find(
+          i => i[this.return] == this.value,
+        );
+        this.search = this.getLabel(this.mutableValue);
+      } else {
+        if (this.value)
+          return console.warn(
+            `[i-select warn]: It's impossible identify the value "${
+              this.value
+            }" without declare a return property.`,
+          );
+      }
     },
 
     /**
@@ -466,11 +482,11 @@ export default {
     },
 
     gobacktomodel() {
-      !this.multiple && (this.search = this.getLabel(this.mutableValue));
+      !this.multiple && (this.search = this.getLabel(this.mutableValue) || '');
     },
 
     clearSearch() {
-      this.search = '';
+      this.search = this.initial;
       this.closeDropdown();
       this.$emit('input', undefined);
       this.multiple && (this.multipleReturn = []);
