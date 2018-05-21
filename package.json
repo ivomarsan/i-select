@@ -1,6 +1,6 @@
 {
   "name": "i-select",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A simple Select and MultiSelect for VueJS",
   "author": {
     "name": "Ivomar Santos",
@@ -13,7 +13,11 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
-  "keywords": ["vue", "select", "multiselect"],
+  "keywords": [
+    "vue",
+    "select",
+    "multiselect"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ivomarsan/i-select.git"
@@ -22,7 +26,11 @@
     "i-tooltip": "^1.0.0",
     "vue": "^2.5.9"
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 8"],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
