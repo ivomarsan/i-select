@@ -3,13 +3,13 @@
     <input ref="search" v-model="search" @focus="openDropdown" @click="openDropdown" @blur="gobacktomodel()" :placeholder="filter && placeholder"
       :readonly="!filter" :class="{ 'readonly': !filter }">
 
-    <i ref="clear" class="clear" @click="clearSearch" v-show="dropdownOpen">
+    <i ref="clear" class="clear" @click="clearSearch" v-show="dropdownOpen" :style="{ height }">
       <slot name="clear">
         X
       </slot>
     </i>
 
-    <i ref="icon" class="icon" @click="openDropdown" v-show="!dropdownOpen">
+    <i ref="icon" class="icon" @click="openDropdown" v-show="!dropdownOpen" :style="{ height }">
       <slot name="icon">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 768 768">
           <path :style="{ 'fill': isColor }" d="m 438.85712,329.14286 h 329.1429 l -164.5714,164.57143 z"></path>
@@ -77,6 +77,7 @@
       dropdownOpen: false,
       mutableOptions: [],
       multipleReturn: [],
+      height: false
     }),
 
     /**
@@ -84,11 +85,20 @@
      * attach any event listeners.
      */
     created() {
+      this.mutableOptions = this.options.slice(0);
       const initialValueWithReturn =
-        this.return && this.options.find(o => o[this.return] === this.value);
+        this.return && this.mutableOptions.find(o => o[this.return] === this.value);
       this.mutableValue = initialValueWithReturn || this.initial;
       this.search = this.getLabel(this.mutableValue);
-      this.mutableOptions = this.options.slice(0);
+    },
+
+    /**
+     * Dropdown List have same top to
+     * <input> in i-select heigth
+     */
+    mounted() {
+      const input = window.getComputedStyle(this.$refs.search);
+      this.height = input.getPropertyValue('height');
     },
 
     watch: {
@@ -99,15 +109,14 @@
        * @return {void}
        */
       value(val) {
-        console.log('value', val);
-
         this.mutableValue = val;
         if (this.return) {
           const initialValueWithReturn =
-            this.return && this.options.find(o => o[this.return] === val);
+            this.return && this.mutableOptions.find(o => o[this.return] === val);
           this.mutableValue = initialValueWithReturn || val;
         }
-        val && this.select(this.mutableValue, false);
+        // Set Label
+        val && this.setLabel(this.mutableValue);
       },
 
       /**
@@ -122,9 +131,6 @@
         this.mutableOptions = val;
 
         if (this.return) {
-          // this.mutableValue = this.mutableOptions.find(
-          //   i => i[this.return] == this.value,
-          // );
           const initialValueWithReturn =
             this.return && val.find(o => o[this.return] === this.value);
           this.mutableValue =
@@ -135,7 +141,7 @@
             return console.warn(
               `[i-select warn]: It's impossible identify the value "${
               this.value
-            }" without declare a return property.\nhttps://www.npmjs.com/package/i-select#return`,
+            }" without declare a return property.\nSee more: https://www.npmjs.com/package/i-select#return`,
             );
         }
       },
@@ -321,8 +327,9 @@
             } else {
               return this.$emit('input', v.map(each => each[this.return]));
             }
+          } else {
+            this.$emit('input', v);
           }
-          this.$emit('input', v);
         },
       },
 
@@ -349,9 +356,9 @@
               );
             } else {
               return console.warn(
-                `[i-select warn]: Label key "option.${
+                `[i-select warn]: Label key "${
                 this.label
-              }" does not exist in options object.\nhttps://www.npmjs.com/package/i-select#label`,
+              }" does not exist in options object.\nSee more: https://www.npmjs.com/package/i-select#label`,
               );
             }
           }
@@ -371,6 +378,7 @@
           'text-transform': this.uppercase ? 'uppercase' : '',
           'border-color': this.isOutline,
           color: this.isColor,
+          top: this.height
         };
       },
     },
@@ -401,7 +409,8 @@
        * @return {void}
        */
       openDropdown(e) {
-        // this.multiple && (this.search = '');
+        this.filter && (this.search = '');
+
         this.$refs.search && this.$refs.search.focus();
 
         this.dropdownOpen = true;
@@ -432,17 +441,28 @@
       select(option, close = true) {
         if (!this.multiple) {
           this.model = option;
-          typeof option === 'string' && (this.search = option);
-          typeof option === 'object' && (this.search = this.getLabel(option));
         } else {
           const index = this.multipleReturn.findIndex(o => o === option);
           if (index < 0) this.multipleReturn.push(option);
           else this.multipleReturn.splice(index, 1);
           this.model = this.multipleReturn;
-          this.search = this.getLabel(this.multipleReturn).join(', ');
         }
+        // Set Label
+        this.setLabel(option);
 
         close && this.closeDropdown();
+      },
+
+      /**
+       * Reutilize function to Set Label
+       * @param  {Object || String} val
+       */
+      setLabel(val) {
+        if (this.multiple) {
+          this.search = this.getLabel(this.multipleReturn).join(', ');
+        } else {
+          this.search = this.getLabel(val)
+        }
       },
 
       /**
@@ -453,54 +473,31 @@
        * @return {String}
        */
       getLabel(option) {
-        if (!option) return;
+        if (!option) return '';
 
-        // const warn = () =>
-        //   console.warn(
-        //     `[i-select warn]: Label key "option.${
-        //       this.label
-        //     }" does not exist in options object.\nhttps://www.npmjs.com/package/i-select#label`,
-        //   );
-
-        // if (typeof option === 'object') {
-        //   if (!option.hasOwnProperty('length')) {
-        //     if (option.hasOwnProperty(this.label)) {
-        //       return option[this.label];
-        //     } else {
-        //       warn();
-        //     }
-        //   } else {
-        //     if (option.length) {
-        //       if (option[0].hasOwnProperty(this.label)) {
-        //         return option.map(each => each[this.label]);
-        //       } else {
-        //         warn();
-        //       }
-        //     }
-        //   }
-        // }
-
-        //
-        //
-        if (this.return) {
-          if (typeof option === 'object' && this.label && !!option[this.label]) {
-            return option[this.label];
+        if (typeof option === 'object' && this.label && !!option[this.label]) {
+          return option[this.label];
+        } else {
+          if (this.multiple) {
+            if (option.length)
+              return option.map(each => each[this.label])
+            else
+              return []
           } else {
             const label = this.mutableOptions.find(i => i[this.return] == option);
+            console.warn(
+              `[i-select warn]: Label key "${
+                this.label
+              }" does not exist in option selected "${option}" is ${label}\nSee more: https://www.npmjs.com/package/i-select#label`,
+            );
+
             if (label) {
               return label[this.label];
             } else {
               return option;
             }
           }
-        } else {
-          if (typeof option === 'object' && this.label && !!option[this.label])
-            return option[this.label];
-          return option;
         }
-        //
-        //
-        // return option;
       },
 
       isOptionSelected(option) {
@@ -512,12 +509,16 @@
       },
 
       gobacktomodel() {
-        !this.multiple && (this.search = this.getLabel(this.mutableValue) || '');
+        if (this.multiple) {
+          this.search = this.getLabel(this.multipleReturn).join(', ');
+        } else {
+          this.search = this.getLabel(this.mutableValue)
+        }
       },
 
       clearSearch() {
         this.search = this.initial;
-        // this.closeDropdown();
+        this.closeDropdown();
         this.$emit('input', undefined);
         this.multiple && (this.multipleReturn = []);
       },
