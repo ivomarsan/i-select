@@ -89,7 +89,7 @@
       const initialValueWithReturn =
         this.return && this.mutableOptions.find(o => o[this.return] === this.value);
       this.mutableValue = initialValueWithReturn || this.initial;
-      this.search = this.getLabel(this.mutableValue);
+      !this.hideLabel && (this.search = this.getLabel(this.mutableValue));
     },
 
     /**
@@ -135,7 +135,7 @@
             this.return && val.find(o => o[this.return] === this.value);
           this.mutableValue =
             initialValueWithReturn || this.getLabel(this.value) || this.model;
-          this.search = this.getLabel(this.mutableValue);
+          !this.hideLabel && (this.search = this.getLabel(this.mutableValue));
         } else {
           if (this.value)
             return console.warn(
@@ -181,7 +181,7 @@
        */
       placeholder: {
         type: String,
-        default: 'Type your query',
+        default: '',
       },
 
       /**
@@ -282,11 +282,10 @@
       },
 
       /**
-       * Display element inline
-       * its mean, no borders
+       * Hide Label from <input>
        * @type {Boolean}
        */
-      inline: {
+      hideLabel: {
         type: Boolean,
         default: false,
       },
@@ -459,9 +458,9 @@
        */
       setLabel(val) {
         if (this.multiple) {
-          this.search = this.getLabel(this.multipleReturn).join(', ');
+          !this.hideLabel && (this.search = this.getLabel(this.multipleReturn).join(', '));
         } else {
-          this.search = this.getLabel(val)
+          !this.hideLabel && (this.search = this.getLabel(val));
         }
       },
 
@@ -510,14 +509,14 @@
 
       gobacktomodel() {
         if (this.multiple) {
-          this.search = this.getLabel(this.multipleReturn).join(', ');
+          !this.hideLabel && (this.search = this.getLabel(this.multipleReturn).join(', '));
         } else {
-          this.search = this.getLabel(this.mutableValue)
+          !this.hideLabel && (this.search = this.getLabel(this.mutableValue));
         }
       },
 
       clearSearch() {
-        this.search = this.initial;
+        !this.hideLabel && (this.search = this.initial);
         this.closeDropdown();
         this.$emit('input', undefined);
         this.multiple && (this.multipleReturn = []);

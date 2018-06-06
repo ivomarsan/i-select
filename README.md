@@ -121,6 +121,7 @@ But you can personalize this with some properties like
 #### Options
 
 > @type {Array}
+> @default []
 
 Options to show on select. You probably need to use a `v-model` to receive
 this data information.
@@ -133,6 +134,7 @@ this data information.
 #### Label
 
 > @type {String}
+> @default 'label'
 
 Imagine now, you have `myOptions` that is an Array but you haven't a key
 property like `label`. Are you thinking to use an `array.map()`? No way! You
@@ -146,6 +148,7 @@ should to use `label property` passing the key name that you want use instead.
 #### Filter
 
 > @type {Boolean}
+> @default false
 
 When `true` a input search will be avaliable to filter results in `options` attribute.
 
@@ -157,6 +160,7 @@ When `true` a input search will be avaliable to filter results in `options` attr
 #### Multiple
 
 > @type {Boolean}
+> @default false
 
 Attribute `multiple` return an `array` of results instead a single result selected.
 
@@ -168,6 +172,7 @@ Attribute `multiple` return an `array` of results instead a single result select
 #### Initial value
 
 > @type {String}
+> @default ''
 
 Will be impressed instead _i-select_
 
@@ -179,6 +184,7 @@ Will be impressed instead _i-select_
 #### Placeholder
 
 > @type {String}
+> @default ''
 
 Add a placeholder on filter when avaliable
 
@@ -190,6 +196,7 @@ Add a placeholder on filter when avaliable
 #### No Matching
 
 > @type {String}
+> @default 'Sorry, no matching options.'
 
 Alternative message to show when has no matching on filter
 
@@ -212,8 +219,9 @@ Return to `v-model` only a single value instead an object. Enter with key name a
 #### Limit
 
 > @type {String}
+> @default '5'
 
-Limit how much results will be avaliable in Select. Default are 5 results
+Limit how much results will be avaliable in Select.
 
 ```html
 <i-select limit="8">
@@ -223,6 +231,7 @@ Limit how much results will be avaliable in Select. Default are 5 results
 #### Disabled
 
 > @type {Boolean}
+> @default false
 
 Disable the entire component
 
@@ -234,6 +243,7 @@ Disable the entire component
 #### Hide Results
 
 > @type {Boolean}
+> @default false
 
 Hide results from Select when filter is called
 
@@ -242,22 +252,24 @@ Hide results from Select when filter is called
 </i-select>
 ```
 
-#### Inline
+#### Hide Label
 
 > @type {Boolean}
+> @default false
 
-Display element inline. Its mean, no borders
+Hide Label from `<input>`
 
 ```html
-<i-select inline>
+<i-select hide-label>
 </i-select>
 ```
 
 #### Max Height
 
 > @type {String}
+> @default '200px'
 
-Sets the max-height property on the select list. Default is 200px
+Sets the max-height property on the select list.
 
 ```html
 <i-select max-height="500px">
@@ -272,6 +284,7 @@ properties.
 #### Uppercase
 
 > @type {Boolean}
+> @default false
 
 Convert All Exibed Text to UPPERCASE
 
@@ -323,10 +336,10 @@ Give us a Tooltip
 This example will open a `Tooltip` with a message to `top`. See above all
 tooltips positions (`is-position`) avaliable:
 
-* `top`
-* `left`
-* `right`
-* `bottom`
+- `top`
+- `left`
+- `right`
+- `bottom`
 
 ```html
 <i-select is-tooltip="This is a Tooltip" is-position="right"></i-select>
@@ -334,4 +347,4 @@ tooltips positions (`is-position`) avaliable:
 
 ## Demo
 
-[JSFiddle](https://jsfiddle.net/wmkjoesn/)
+[JSFiddle](https://jsfiddle.net/gfprd91b/)
