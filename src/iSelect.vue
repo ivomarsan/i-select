@@ -115,6 +115,7 @@
             this.return && this.mutableOptions.find(o => o[this.return] === val);
           this.mutableValue = initialValueWithReturn || val;
         }
+        this.multiple && (this.multipleReturn = this.mutableValue)
         // Set Label
         val && this.setLabel(this.mutableValue);
       },
@@ -140,7 +141,7 @@
           if (this.value)
             return console.warn(
               `[i-select warn]: It's impossible identify the value "${
-              this.value
+              this.getLabel(this.mutableValue)
             }" without declare a return property.\nSee more: https://www.npmjs.com/package/i-select#return`,
             );
         }
@@ -240,8 +241,8 @@
        * @type {String}
        */
       limit: {
-        type: String,
-        default: '5',
+        type: [Number, String],
+        default: 5,
       },
 
       /**
