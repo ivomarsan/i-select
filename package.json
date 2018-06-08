@@ -23,7 +23,6 @@
     "url": "git+https://github.com/ivomarsan/i-select.git"
   },
   "dependencies": {
-    "i-tooltip": "^1.0.0",
     "vue": "^2.5.9"
   },
   "browserslist": [
